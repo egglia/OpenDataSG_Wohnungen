@@ -1,2 +1,9 @@
 .idea
 .venv
+.coverage
+**/*.pyc
+**/__pycache__
+
+# skip temporary word/excel files that are currently opened
+~$*.doc*
+~$*.xlsx

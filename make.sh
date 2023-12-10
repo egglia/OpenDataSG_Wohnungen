@@ -29,7 +29,7 @@ do
 
         "lint")
             # flake8/pylint is a tool for automated code style checks
-            flake8 --max-line-length 100 ./data ./plot_lib ./scripts
+            flake8 --max-line-length 100 ./data ./occupancy ./plot_lib ./scripts
             echo flake8 finished
             ;;
 
