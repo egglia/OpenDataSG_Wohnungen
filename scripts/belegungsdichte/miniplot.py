@@ -59,7 +59,7 @@ def add_quartier_to_plt(ax: Axes,
 
     # Ax limits
     ax_mini.set_ylim([0, 1])
-    ax_mini.set_xlim([years[0] - WIDTH/2, years[-1] - WIDTH/2])
+    ax_mini.set_xlim([years[0] - WIDTH/2, years[-1] + WIDTH/2])
 
     return ax_mini
 
