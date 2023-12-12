@@ -44,9 +44,10 @@ def add_quartier_to_plt(ax: Axes,
     # plot the relative percentages
     years: np.ndarray = np.array(occupacy_df.index.tolist())
     bottom: list = np.zeros(len(years))
+    WIDTH: float = 1.
     for color, category in LEGEND_COLOR_CATEGORY:
         normalbel: np.ndarray = np.array(occupacy_df[category].tolist())
-        ax_mini.bar(years, normalbel, color=color, width=1, label=category, bottom=bottom)
+        ax_mini.bar(years, normalbel, color=color, width=WIDTH, label=category, bottom=bottom)
         bottom += normalbel
 
     # Miniplot background transparency
@@ -56,8 +57,9 @@ def add_quartier_to_plt(ax: Axes,
     ax_mini.set_xticks([])
     ax_mini.set_yticks([])
 
-    # xlimits
+    # Ax limits
     ax_mini.set_ylim([0, 1])
+    ax_mini.set_xlim([years[0] - WIDTH/2, years[-1] - WIDTH/2])
 
     return ax_mini
 
