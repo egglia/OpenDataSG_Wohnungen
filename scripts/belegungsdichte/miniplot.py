@@ -17,7 +17,7 @@ LEGEND_COLOR_CATEGORY: list = [("blue", "Unterbelegt"),
 
 
 def add_quartier_to_plt(ax: Axes,
-                        quartier: Quartier) -> Axes:
+                        quartier: Quartier or None) -> Axes:
     """
     Adds a new axis for the miniplot and puts it on top of the background
     :param ax: existing matplotlib axes with the background
@@ -25,20 +25,40 @@ def add_quartier_to_plt(ax: Axes,
     :return:
     """
     # Load the data regarding occupation values
-    occupacy_df: pd.DataFrame = quartier.get_occupacy()
+    if quartier is None:  # Load data for whole city
+        occupacy_df: pd.DataFrame = Quartier.get_occupacy_all_districts()
 
-    # Check if there even exists data for that district
-    if (occupacy_df["Normalbelegt"] == 0).all():
-        warn(f"No data for {quartier.get_name()}. No miniplot generated")
-        return None
+        ax_mini = inset_axes(ax,
+                             width="30%",
+                             height="30%",
+                             bbox_transform=ax.transAxes,
+                             bbox_to_anchor=(0.07, 0, 1, 1),
+                             loc='upper left')
 
-    ax_mini = inset_axes(ax,
-                         width=.5,
-                         height=.5,
-                         bbox_transform=ax.transData,
-                         bbox_to_anchor=(quartier.get_coordinate_lon(),
-                                         quartier.get_coordinate_lat()),
-                         loc='center')
+        ax_mini.set_xticks([2011, 2015, 2019])
+        ax_mini.set_yticks([0, .5, 1.], ["0%", "50%", "100%"])
+        ax_mini.set_title("Ganze Stadt St.Gallen")
+
+    else:  # Load data for only one single district
+        occupacy_df: pd.DataFrame = quartier.get_occupacy()
+
+        # Check if there even exists data for that district
+        if (occupacy_df["Normalbelegt"] == 0).all():
+            warn(f"No data for {quartier.get_name()}. No miniplot generated")
+            return None
+
+        ax_mini = inset_axes(ax,
+                             width=.5,
+                             height=.5,
+                             bbox_transform=ax.transData,
+                             bbox_to_anchor=(quartier.get_coordinate_lon(),
+                                             quartier.get_coordinate_lat()),
+                             loc='center')
+
+        # Remove x ticks
+        ax_mini.set_xticks([])
+        ax_mini.set_yticks([])
+        ax_mini.set_title(quartier.get_name().replace("-", "-\n"), fontsize=6, pad=0)
     ax_mini: Axes
 
     # plot the relative percentages
@@ -53,13 +73,17 @@ def add_quartier_to_plt(ax: Axes,
     # Miniplot background transparency
     ax_mini.patch.set_alpha(.6)
 
-    # Remove x ticks
-    ax_mini.set_xticks([])
-    ax_mini.set_yticks([])
-
     # Ax limits
     ax_mini.set_ylim([0, 1])
     ax_mini.set_xlim([years[0] - WIDTH/2, years[-1] + WIDTH/2])
+
+    if quartier is None:
+        # add a legend, but only for the whole city plot
+        # Reverse the order of handles and labels
+        handles, labels = ax_mini.get_legend_handles_labels()
+        handles = handles[::-1]
+        labels = labels[::-1]
+        ax_mini.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, -0.2))
 
     return ax_mini
 
@@ -72,14 +96,13 @@ plot_districts(ax)
 
 districts: list = list_districts()
 
+# Add 'None' to districts list: Top left plot for the whole city
+districts.append(None)
+
 for quartier in districts:
     add_quartier_to_plt(ax, quartier)
 
 # Polish plot
-for color, label in reversed(LEGEND_COLOR_CATEGORY):
-    ax.plot([0, 0], [0, 0], color=color, label=label)
-ax.legend(loc="upper left")
-
 ax.set_xticks([])  # Remove x ticks
 ax.set_yticks([])
 ax.set_frame_on(False)

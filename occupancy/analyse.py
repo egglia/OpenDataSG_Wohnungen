@@ -6,14 +6,22 @@ STATISTICS: pd.DataFrame = get_apartment_statistics_xlsx()
 YEARS: list = sorted(STATISTICS['Belegungsjahr'].unique().tolist())
 
 
-def get_district_data(district_name: str):
-    assert district_name in STATISTICS["Quartiersgruppe Name"].unique().tolist()
+def get_district_data(district_name: str or None):
+    """
+    Extract the relevant data from the excel in the .data folder.
+    :param district_name: Name of district (or 'None' for ALL districts in the city)
+    :return:
+    """
 
     data: pd.DataFrame = pd.DataFrame(index=YEARS)
     for year in data.index:
-        # Extract the relevant year for the requested district
-        filtered_data = STATISTICS[(STATISTICS['Belegungsjahr'] == year)
-                                   & (STATISTICS['Quartiersgruppe Name'] == district_name)]
+        # Extract the relevant year
+        filtered_data = STATISTICS[STATISTICS['Belegungsjahr'] == year]
+
+        # If requested, further filtering for just one district
+        if district_name is not None:
+            assert district_name in STATISTICS["Quartiersgruppe Name"].unique().tolist()
+            filtered_data = filtered_data[filtered_data['Quartiersgruppe Name'] == district_name]
 
         count_normaloccup: int = 0  # Normalbelegung
         count_overoccup: int = 0  # Anzahl Wohnungen mit Überbelegung

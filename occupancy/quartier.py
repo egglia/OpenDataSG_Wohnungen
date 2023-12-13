@@ -32,6 +32,14 @@ class Quartier():
         """
         return self._occupancy
 
+    @classmethod
+    def get_occupacy_all_districts(self) -> pd.DataFrame:
+        """
+        Collect data from all districts available in the while city of St.Gallen
+        :return:
+        """
+        return get_district_data(None)
+
 
 def list_districts() -> List[Quartier]:
     # Returns a list of districts
@@ -58,3 +66,7 @@ def list_districts() -> List[Quartier]:
         districts.append(district)
 
     return districts
+
+
+if __name__ == "__main__":
+    Quartier.get_occupacy_all_districts()

@@ -26,7 +26,7 @@ def plot_districts(ax):
 
     gdf = get_districts_geojson()  # Contains one polygon per district
 
-    gdf.plot(ax=ax, color='none', edgecolor='black')
+    gdf.plot(ax=ax, color='none', edgecolor='lightgray', alpha=1)
 
     # Set the extent based on the bounding box of the GeoJSON file
     extent = [gdf.bounds.minx.min(), gdf.bounds.maxx.max(),
