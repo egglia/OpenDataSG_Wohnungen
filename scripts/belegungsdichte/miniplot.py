@@ -14,6 +14,7 @@ from plot_lib.backgroundmap import plot_districts
 LEGEND_COLOR_CATEGORY: list = [("blue", "Unterbelegt"),
                                ("lightgray", "Normalbelegt"),
                                ("red", "Überbelegt")]
+FRONTSIZE: float = 8.
 
 
 def add_quartier_to_plt(ax: Axes,
@@ -37,7 +38,9 @@ def add_quartier_to_plt(ax: Axes,
 
         ax_mini.set_xticks([2011, 2015, 2019])
         ax_mini.set_yticks([0, .5, 1.], ["0%", "50%", "100%"])
-        ax_mini.set_title("Ganze Stadt St.Gallen")
+        ax_mini.tick_params(axis='both', labelsize=FRONTSIZE)
+        ax_mini.set_title("Total aller St.Galler Quartiere",
+                          fontsize=FRONTSIZE, pad=6)
 
     else:  # Load data for only one single district
         occupacy_df: pd.DataFrame = quartier.get_occupacy()
@@ -58,7 +61,8 @@ def add_quartier_to_plt(ax: Axes,
         # Remove x ticks
         ax_mini.set_xticks([])
         ax_mini.set_yticks([])
-        ax_mini.set_title(quartier.get_name().replace("-", "-\n"), fontsize=6, pad=0)
+        ax_mini.set_title(quartier.get_name().replace("-", "-\n"),
+                          fontsize=FRONTSIZE, pad=3)
     ax_mini: Axes
 
     # plot the relative percentages
@@ -71,7 +75,7 @@ def add_quartier_to_plt(ax: Axes,
         bottom += normalbel
 
     # Miniplot background transparency
-    ax_mini.patch.set_alpha(.6)
+    ax_mini.patch.set_alpha(0.)
 
     # Ax limits
     ax_mini.set_ylim([0, 1])
@@ -83,7 +87,10 @@ def add_quartier_to_plt(ax: Axes,
         handles, labels = ax_mini.get_legend_handles_labels()
         handles = handles[::-1]
         labels = labels[::-1]
-        ax_mini.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, -0.2))
+        ax_mini.legend(handles, labels,
+                       loc='upper center',
+                       bbox_to_anchor=(0.5, -0.2),
+                       fontsize=FRONTSIZE)
 
     return ax_mini
 
@@ -105,6 +112,8 @@ for quartier in districts:
 # Polish plot
 ax.set_xticks([])  # Remove x ticks
 ax.set_yticks([])
+ax.set_title("Belegung der Neuwohnungen in der Stadt St. Gallen",
+             fontsize=FRONTSIZE+2, pad=15)
 ax.set_frame_on(False)
 plt.tight_layout()
 
