@@ -13,7 +13,7 @@ from plot_lib.backgroundmap import plot_districts
 
 LEGEND_COLOR_CATEGORY: list = [("blue", "Unterbelegt"),
                                ("lightgray", "Normalbelegt"),
-                               ("red", "Überbelegt")]
+                               ("darkgoldenrod", "Überbelegt")]
 FRONTSIZE: float = 8.
 
 
@@ -117,6 +117,6 @@ ax.set_title("Belegung der Neuwohnungen in der Stadt St. Gallen",
 ax.set_frame_on(False)
 plt.tight_layout()
 
-plt.savefig("Belegung Wohnungen St.Gallen.png")
+plt.savefig("Belegung Wohnungen St.Gallen.png", dpi=450)
 plt.savefig("Belegung Wohnungen St.Gallen.pdf")
 plt.show()
